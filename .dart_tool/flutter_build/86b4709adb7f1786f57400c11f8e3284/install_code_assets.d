@@ -1,0 +1,1 @@
+ C:\\Users\\uzyko\\AndroidStudioProjects\\authorization_interface\\.dart_tool\\flutter_build\\86b4709adb7f1786f57400c11f8e3284\\native_assets.json: 
