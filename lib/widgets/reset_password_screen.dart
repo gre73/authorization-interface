@@ -19,8 +19,59 @@ class ResetPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Reset")),
-      body: const ResetPassword(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.lock_reset, size: 80, color: Colors.indigo),
+            const SizedBox(height: 20),
+            const Text(
+              'Forgot your password?',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Enter your email address and we will send you a link to reset your password.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey[600], fontSize: 15),
+            ),
+            const SizedBox(height: 30),
+
+            const TextField(
+              decoration: InputDecoration(
+                labelText: 'Email',
+                prefixIcon: Icon(Icons.mail_outline),
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('The link has been sent!')),
+                );
+              },
+              child: const Text('Send link'),
+            ),
+
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Return to login'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -9,10 +9,90 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text("Sign in")),
-        body: const SignIn(),
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: 120,
+                child: Image.network(
+                  'https://cdn-icons-png.flaticon.com/512/295/295128.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+              const SizedBox(height: 40),
+
+              const Text(
+                'Welcome back!',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 30),
+
+              const TextField(
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.email_outlined),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              const TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  prefixIcon: Icon(Icons.lock_outline),
+                ),
+              ),
+
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
+                    );
+                  },
+                  child: const Text('Forgot your password?'),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text('Log in'),
+              ),
+              const SizedBox(height: 16),
+
+              const Row(
+                children: [
+                  Expanded(child: Divider()),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text('OR'),
+                  ),
+                  Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SignupScreen()),
+                  );
+                },
+                child: const Text('Create an account'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

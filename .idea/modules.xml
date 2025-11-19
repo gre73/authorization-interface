@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/authorization_interface.iml" filepath="$PROJECT_DIR$/authorization_interface.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/authorization_interface_android.iml" filepath="$PROJECT_DIR$/android/authorization_interface_android.iml" />
     </modules>
   </component>
 </project>
