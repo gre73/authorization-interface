@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(const MaterialApp(home: ResetPasswordScreen()));
+import 'package:http/http.dart' as http;
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -12,6 +11,46 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+  final _emailController = TextEditingController();
+
+  final String baseUrl = 'https://mylab10.requestcatcher.com/test ';
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _sendResetLink() async {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sending request...')),
+      );
+
+      try {
+        await http.post(
+          Uri.parse('$baseUrl/reset'),
+          body: {
+            'email': _emailController.text,
+            'action': 'reset_password',
+          },
+        );
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('The link has been sent! Check RequestCatcher.')),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e')),
+          );
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +86,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   const SizedBox(height: 30),
 
                   TextFormField(
+                    controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       labelText: 'Email',
@@ -54,28 +94,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!_emailRegex.hasMatch(value)) {
-                        return 'Invalid email format';
-                      }
+                      if (value == null || value.isEmpty) return 'Please enter your email';
+                      if (!_emailRegex.hasMatch(value)) return 'Invalid email format';
                       return null;
                     },
                   ),
                   const SizedBox(height: 30),
 
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('The link has been sent!')),
-                        );
-                      }
-                    },
+                    onPressed: _sendResetLink,
                     child: const Text('Send link'),
                   ),
-
                   const SizedBox(height: 10),
                   TextButton(
                     onPressed: () {

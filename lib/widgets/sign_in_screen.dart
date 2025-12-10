@@ -1,8 +1,7 @@
 import 'package:authorization_interface/widgets/reset_password_screen.dart';
 import 'package:authorization_interface/widgets/signup_screen.dart';
 import 'package:flutter/material.dart';
-
-void main() => runApp(const SignInScreen());
+import 'package:http/http.dart' as http;
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -15,10 +14,12 @@ class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
+  final String baseUrl = 'https://mylab10.requestcatcher.com/test ';
+
   String? _email;
   String? _password;
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
@@ -29,17 +30,22 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       );
 
-      print("Login with: $_email / $_password");
-    } else {
-       showDialog(
-        context: context,
-        builder: (BuildContext ctx) {
-          return const AlertDialog(
-            title: Text('Error'),
-            content: Text("Please verify that the information you have entered is correct."),
-          );
-        },
-      );
+      try {
+        final response = await http.post(
+          Uri.parse('$baseUrl/login'),
+          body: {
+            'email': _email,
+            'password': _password,
+            'action': 'login',
+          },
+        );
+
+        print("Response status: ${response.statusCode}");
+        print("Login with: $_email / $_password");
+
+      } catch (e) {
+        print("Error sending request: $e");
+      }
     }
   }
 
@@ -65,7 +71,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-
                 const Text(
                   'Welcome back!',
                   textAlign: TextAlign.center,
@@ -81,12 +86,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     prefixIcon: Icon(Icons.email_outlined),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter your email address';
-                    }
-                    if (!_emailRegex.hasMatch(value)) {
-                      return 'Invalid email format';
-                    }
+                    if (value == null || value.isEmpty) return 'Enter your email address';
+                    if (!_emailRegex.hasMatch(value)) return 'Invalid email format';
                     return null;
                   },
                   onSaved: (value) => _email = value,
@@ -100,12 +101,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     prefixIcon: Icon(Icons.lock_outline),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter your password';
-                    }
-                    if (value.length < 6) {
-                      return 'The password must be at least 6 characters long.';
-                    }
+                    if (value == null || value.isEmpty) return 'Enter your password';
+                    if (value.length < 6) return 'Password must be at least 6 characters';
                     return null;
                   },
                   onSaved: (value) => _password = value,
